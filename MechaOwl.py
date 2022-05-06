@@ -15,6 +15,7 @@ async def on_ready():
 
 bot.load_extension("cogs.hello")
 bot.load_extension("cogs.poll")
+bot.load_extension("cogs.quote")
 
 
 bot.run(token)
