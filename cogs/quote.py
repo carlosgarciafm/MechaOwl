@@ -5,11 +5,16 @@ from json import loads
 from random import choice
 
 
+with request.urlopen("https://animechan.vercel.app/api/available/anime") as response:
+    anime_list = loads(response.read())
+
+
 class QuoteCommand(commands.Cog):
     """Quote an anime character using [Animechan](RocktimSaikia/anime-chan)."""
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.apiurl = "https://animechan.vercel.app/api"
+        self.anime_list = anime_list
 
     @commands.slash_command()
     async def quote(
@@ -46,6 +51,17 @@ class QuoteCommand(commands.Cog):
                 description=f"***{q['quote']}***")
         embed.set_footer(text="Powered by Animechan API.")
         await inter.response.send_message(embed=embed)
+
+    @quote.autocomplete("anime")
+    async def anime_autocomplete(self, inter: disnake.CommandInteraction, name: str):
+        if not name:
+            return self.anime_list[:20]
+        completion = list()
+        for title in self.anime_list:
+            if len(completion) == 20: break
+            if name.lower() in title.lower():
+                completion.append(title)
+        return completion
 
 
 def setup(bot: commands.Bot):
