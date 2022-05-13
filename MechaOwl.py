@@ -18,6 +18,7 @@ bot.load_extension("cogs.poll")
 bot.load_extension("cogs.quote")
 bot.load_extension("cogs.role")
 bot.load_extension("cogs.memefy")
+bot.load_extension("cogs.pomodoro")
 
 
 bot.run(token)
