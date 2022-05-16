@@ -4,6 +4,7 @@ from disnake.ext import commands
 
 class HelloCommand(commands.Cog):
     """Say hello to the user."""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

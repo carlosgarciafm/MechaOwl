@@ -11,6 +11,7 @@ with request.urlopen("https://animechan.vercel.app/api/available/anime") as resp
 
 class QuoteCommand(commands.Cog):
     """Quote an anime character using [Animechan](RocktimSaikia/anime-chan)."""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.apiurl = "https://animechan.vercel.app/api"
@@ -18,16 +19,16 @@ class QuoteCommand(commands.Cog):
 
     @commands.slash_command()
     async def quote(
-            self,
-            inter: disnake.CommandInteraction,
-            character: str | None = None,
-            anime: str | None = None,
-            ):
+        self,
+        inter: disnake.CommandInteraction,
+        character: str | None = None,
+        anime: str | None = None,
+    ):
         """Quote an anime character.
         Parameters
         -----------
-        character: character name to be quoted
-        anime: anime name
+        character: Character name to be quoted
+        anime: Anime name
         """
         req_url = self.apiurl
         if anime and character or character:
@@ -35,20 +36,21 @@ class QuoteCommand(commands.Cog):
         elif anime:
             req_url += f"/quotes/anime?title={anime.replace(' ', '.')}"
         else:
-            req_url +="/random"
+            req_url += "/random"
         try:
             with request.urlopen(req_url) as response:
                 answer = response.read()
                 quote_dict = loads(answer)
         except:
             return await inter.response.send_message(
-                    "An error occurred. Try later or with different names.")
+                "An error occurred. Try later or with different names."
+            )
 
         q = choice(quote_dict)
 
         embed = disnake.Embed(
-                title=f"{q['character']} [{q['anime']}]:",
-                description=f"***{q['quote']}***")
+            title=f"{q['character']} [{q['anime']}]:", description=f"***{q['quote']}***"
+        )
         embed.set_footer(text="Powered by Animechan API.")
         await inter.response.send_message(embed=embed)
 
@@ -58,7 +60,8 @@ class QuoteCommand(commands.Cog):
             return self.anime_list[:20]
         completion = list()
         for title in self.anime_list:
-            if len(completion) == 20: break
+            if len(completion) == 20:
+                break
             if name.lower() in title.lower():
                 completion.append(title)
         return completion

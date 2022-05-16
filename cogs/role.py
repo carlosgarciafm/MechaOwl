@@ -4,6 +4,7 @@ from disnake.ext import commands
 
 class RoleCommand(commands.Cog):
     """Manage user's current roles in the server."""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
@@ -14,16 +15,16 @@ class RoleCommand(commands.Cog):
 
     @role.sub_command()
     async def list(
-            self,
-            inter: disnake.CommandInteraction,
-            member: disnake.Member | None = None,
-            public: bool = False,
-            ):
+        self,
+        inter: disnake.CommandInteraction,
+        member: disnake.Member | None = None,
+        public: bool = False,
+    ):
         """List server-specific roles for the user.
         Parameters
         ---------------
-        member: server member to query
-        public: do you want to message to be visible by everyone?
+        member: Server member to query
+        public: Do you want to message to be visible by everyone?
         """
         if not isinstance(inter.author, disnake.Member):
             return await inter.response.send_message("You're not one of us.")
@@ -36,15 +37,11 @@ class RoleCommand(commands.Cog):
         await inter.response.send_message(embed=embed, ephemeral=public)
 
     @role.sub_command()
-    async def assign(
-            self,
-            inter: disnake.CommandInteraction,
-            role: disnake.Role
-            ):
+    async def assign(self, inter: disnake.CommandInteraction, role: disnake.Role):
         """Self assign an existing role.
         Parameters
         ---------------
-        role: which role do you want?
+        role: Which role do you want?
         """
         if not isinstance(inter.author, disnake.Member):
             return await inter.response.send_message("You're not one of us.")
@@ -53,21 +50,18 @@ class RoleCommand(commands.Cog):
             return await inter.response.send_message("Access denied for bots.")
         if role._permissions > inter.author.guild_permissions.value:
             return await inter.response.send_message(
-            "You don't have the privileges to be assigned this role.")
+                "You don't have the privileges to be assigned this role."
+            )
 
         await inter.author.add_roles(role)
         await inter.response.send_message(f"You were assigned the role of {role}.")
 
     @role.sub_command()
-    async def revoke(
-            self,
-            inter: disnake.CommandInteraction,
-            role: disnake.Role
-            ):
+    async def revoke(self, inter: disnake.CommandInteraction, role: disnake.Role):
         """Self remove role from member.
         Parameters
         ---------------
-        role: which role do you want to remove?
+        role: Which role do you want to remove?
         """
         if not isinstance(inter.author, disnake.Member):
             return await inter.response.send_message("You're not one of us.")
@@ -76,22 +70,24 @@ class RoleCommand(commands.Cog):
             return await inter.response.send_message("Access denied for bots.")
 
         if role not in inter.author.roles:
-            return await inter.response.send_message(f"You don't currently have the {role} role assigned.")
+            return await inter.response.send_message(
+                f"You don't currently have the {role} role assigned."
+            )
         await inter.author.remove_roles(role)
         await inter.response.send_message(f"You were removed the role of {role}.")
 
     @role.sub_command()
     async def create(
-            self,
-            inter: disnake.CommandInteraction,
-            name: str,
-            colour: disnake.Colour,
-            ):
+        self,
+        inter: disnake.CommandInteraction,
+        name: str,
+        colour: disnake.Colour,
+    ):
         """Create a new role for the server.
         Parameters
         ---------------
-        name: what's the name for the new role?
-        colour: what's the colour for the new role? (hex format #f00 #ff0000)
+        name: What's the name for the new role?
+        colour: What's the colour for the new role? (hex format #f00 #ff0000)
         """
         if not isinstance(inter.guild, disnake.Guild):
             return await inter.response.send_message("Invalid server.")
@@ -104,14 +100,14 @@ class RoleCommand(commands.Cog):
 
     @role.sub_command()
     async def delete(
-            self,
-            inter: disnake.CommandInteraction,
-            role: disnake.Role,
-            ):
+        self,
+        inter: disnake.CommandInteraction,
+        role: disnake.Role,
+    ):
         """Delete an existing role in the server.
         Parameters
         ---------------
-        name: which role do you want to delete?
+        name: Which role do you want to delete?
         """
         if not isinstance(inter.author, disnake.Member):
             return await inter.response.send_message("You're not one of us.")
@@ -124,7 +120,9 @@ class RoleCommand(commands.Cog):
             await role.delete()
             await inter.response.send_message(f"The role {role} has been deleted.")
         except disnake.Forbidden:
-            await inter.response.send_message("You don't have the privileges to delete this role.")
+            await inter.response.send_message(
+                "You don't have the privileges to delete this role."
+            )
 
 
 def setup(bot: commands.Bot):
